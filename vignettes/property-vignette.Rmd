@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+library(MelbournePrices)
 library(tidyverse)
 library(readr)
 library(knitr)
@@ -22,23 +23,25 @@ library(readxl)
 ```
 
 ```{r}
-property_data <- read_excel("data-raw/Houses-by-suburb-2013-2023.xlsx")
+load ("C:/Users/aalch/OneDrive/Desktop/Communicating with data/assignment-4-packages-and-shiny-apps-Saumya6915/data/property_data_wide.rda")
+
 ```
 
-# <u>A Review</u>
+
+## <u> Introduction </u>
+
+Melbourne's housing market has experienced significant shifts over the past decade. Once stable suburbs are now booming, and previously overlooked areas have become hotspots for investment. The dataset in this package allows us to dive deeply into these changes, revealing which suburbs have demonstrated robust growth, fluctuating volatility, and promising trends.
+
+This vignette offers an analysis guide using data from 2013 to 2023, sourced from the [Victoria State Government website](https://www.land.vic.gov.au/valuations/resources-and-reports/property-sales-statistics). Through this analysis, we’ll identify suburbs with high investment potential and those with notable volatility, providing insights into the dynamics that drive Melbourne’s property market.
 
 At some point, nearly everyone living in Melbourne has found themselves caught in the search for a place to buy, navigating the complexities of the city's housing market. But can you imagine what property prices looked like a decade ago? With Melbourne's real estate landscape evolving so dramatically, many are left wondering: which suburbs offer the best opportunities for investment, lifestyle, and long-term growth?
 
-In this blog post, we'll take a deep dive into Melbourne's housing market dynamics over the past ten years, highlighting price volatility and growth trends across various suburbs from 2013 to 2023 and uncover which areas have emerged as strong contenders for future investment.
+Dataset Description
+The dataset provides several key metrics on property prices and growth in Melbourne. Here’s a breakdown of the variables:
 
+## <u>Data Overview</u>
 
-
-![Melbourne Housing Market](thumbnail.jpg)
-
-
-# <u>Data Overview</u>
-
-The data for this analysis was sourced from the [Victoria State Government website](https://www.land.vic.gov.au/valuations/resources-and-reports/property-sales-statistics) , covering the period from 2013 to 2023 @tbl-data-dictionary.
+The data for this analysis was sourced from the [Victoria State Government website](https://www.land.vic.gov.au/valuations/resources-and-reports/property-sales-statistics) , covering the period from 2013 to 2023 @tbl-data-dictionary. 
 
 The **Valuer-General Victoria (VGV)** releases comprehensive data which is compiled using information lodged every time a property sale is completed. It focuses on median house prices across various suburbs in Melbourne. The key metrics include annual median prices and percentage changes for each suburb.
 
@@ -50,194 +53,108 @@ library(knitr)
 library(kableExtra)
 
 data_desc <- data.frame(
-  Variable_Name = c("Locality", "2013-2023", "Prelim", "22-23", "13-23", "PA"),
-  Description = c("The name of the suburb or locality in Melbourne.",
-                  "Median house prices from 2013 to 2023, measured in AUD.",
-                  "Preliminary house price estimates for 2023.",
-                  "Percentage change in median house price (2022 to 2023).",
-                  "Percentage growth in house prices (2013 to 2023).",
-                  "Compound annual growth rate (CAGR) or price appreciation (PA) percentage.")
+  Variable_Name = c("Locality", "Prelim", "22-23", "13-23", "PA", "year", "median_price"),
+  Description = c(
+    "The name of the suburb or locality in Melbourne.",
+    "Preliminary house price estimate for the latest year.",
+    "Percentage change in median house price from 2022 to 2023.",
+    "Percentage growth in house prices from 2013 to 2023.",
+    "Compound annual growth rate (CAGR) or price appreciation (PA) percentage.",
+    "The year associated with the median price.",
+    "The median house price in AUD for the specified locality and year."
+  )
 )
 
 # Print the data dictionary table
 kable(data_desc, caption = "Variables in the dataset") %>%
-  kable_styling() 
-```
-
-## Data Cleaning Steps
-
-To prepare the data for analysis, the following cleaning step was implemented:
-
-**Data Type Conversion:** Several columns representing yearly median prices and assessments were converted to numeric data types to ensure accurate calculations and analyses. This step is crucial for performing statistical operations and generating visualizations. 
-
-Here is the code used for this data cleaning process:
-
-```{r echo=TRUE}
-
-property_data$`2013` <- as.numeric(property_data$`2013`)
-property_data$`2014` <- as.numeric(property_data$`2014`)
-property_data$`2015` <- as.numeric(property_data$`2015`)
-property_data$`2016` <- as.numeric(property_data$`2016`)
-property_data$`2017` <- as.numeric(property_data$`2017`)
-property_data$`2018` <- as.numeric(property_data$`2018`)
-property_data$`2019` <- as.numeric(property_data$`2019`)
-property_data$`Prelim` <- as.numeric(property_data$`Prelim`)
-property_data$`13-23` <- as.numeric(property_data$`13-23`)
-property_data$`PA` <- as.numeric(property_data$`PA`)
+  kable_styling()
 
 ```
 
-**Handling missing Values:** Some columns, like 13-23, contained NA values. Rows with missing values in the 13-23 column, which represents percentage growth over the 10-year period, were removed to ensure consistent analysis for the plot. 
+## <u>Variable Insights</u>
 
-```{r echo=TRUE}
-property_growth <- property_data %>%
-  select(Locality, `13-23`) %>%
-  drop_na(`13-23`) 
-```
+**Locality:** This variable helps us track property trends within specific suburbs, making it possible to identify high-growth areas.
 
+**Prelim:** Preliminary data for the latest year gives early insights into price trends and can highlight shifts that may continue into future years.
+
+**22-23 and 13-23:** These metrics provide percentage growth over one year (2022–2023) and over a decade (2013–2023), allowing us to understand both recent shifts and long-term trends.
+
+**PA (CAGR):** Represents the annualized growth rate over ten years, smoothing out year-to-year volatility and reflecting the underlying trend.
+
+**Year and median_price:** These columns form the basis of our time-series analysis, enabling us to examine price changes across years for each locality.
 
 # <u>Understanding the Dynamics</u>
 
-Over the past decade, Melbourne’s property market has experienced significant fluctuations, with some suburbs witnessing rapid growth while others have remained more stable. Understanding these trends is crucial for investors, homeowners, and policymakers alike.
+**1. Annual Price Growth for a Locality**
 
-By analyzing the growth of the top 10 suburbs through various plots, we can uncover which areas have experienced the most consistent growth and where opportunities may lie for future investment. Whether you're a seasoned investor, looking to buy a house or simply curious about the market, this analysis will offer valuable insights into Melbourne's ever-changing property landscape.
+The annual_price_growth function is designed to help users track the year-over-year growth in median property prices for a specific suburb. This function is useful for examining trends within individual localities, helping users understand how property prices have evolved over time in response to factors such as demand, local development, and changes in infrastructure.
 
-
-## Analysis  
-
-In this section, we focus on identifying the top-performing suburbs in Melbourne's property market over the last decade, highlighting both the percentage growth in house prices and the volatility within the market.
-
-The bar chart below presents the suburbs with the highest percentage growth in property prices between 2013 and 2023. As we can see in @fig-top-10-suburbs, the top-performing suburb, Cardigan, witnessed a remarkable 489% growth, making it a prime candidate for investment. 
-
-
-```{r include=FALSE}
-property_growth <- property_growth %>%
-  arrange(desc(`13-23`)) %>%
-  slice_head(n = 10) 
-```
+By calculating the year-over-year percentage change in median prices, this function reveals periods of growth, stagnation, or decline within a specific suburb. It is particularly valuable for investors, real estate professionals, and policymakers who want to assess the stability and growth potential of specific areas in Melbourne.
 
 ```{r}
-#| label: fig-top-10-suburbs
-#| tbl-cap: "Top 10 Suburbs in Melbourne by Percentage Growth (2013-2023)."
-#| fig-width: 7
-#| fig-height: 3
-
-# First process the property_growth data
-property_growth <- property_data %>%
-  select(Locality, `13-23`) %>%
-  drop_na(`13-23`) %>%
-  arrange(desc(`13-23`)) %>%
-  slice_head(n = 10)
-
-# Create the bar plot
-growth_plot <- ggplot(property_growth,
-                      aes(x = reorder(Locality, `13-23`),
-                          y = `13-23`,
-                          fill = `13-23`)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = paste0(round(`13-23`, 1), "%")),   # Add labels for percentage growth
-            hjust = -0.1, size = 2.5) +       # Adjust text position and size
-  coord_flip() + 
-  labs(title = "Top 10 Suburbs by Percentage Growth (2013-2023)",  # Updated title
-       x = "Locality",
-       y = "Percentage Growth (2013-2023)") +  # Updated y-axis label
-  theme_bw() +
-  scale_fill_gradient(low = "#dbe5f4", high = "#004b87", guide = FALSE) 
-
-# Print the plot
-print(growth_plot)
-
-
+annual_growth <- annual_price_growth(property_data, "ABBOTSFORD")
+head(annual_growth)
 ```
 
+The output displays the year, median_price, and annual_growth_rate columns for ABBOTSFORD. The annual_growth_rate column shows the percentage change in median property prices from one year to the next, giving insight into growth trends and potential volatility.
 
+**2. Top-Performing Suburbs Based on Average Annual Growth **
 
-The bar chart above highlights the suburbs leading in price appreciation in Melbourne over the past decade, with all experiencing remarkable increases of over 200%.
-
-At the forefront is **Cardigan**, with an impressive 489% growth, indicating soaring demand driven by development and enhanced amenities, attracting families seeking a community-oriented environment.
-
-**Marysville** follows with a 285% growth, reflecting its rising value as a desirable destination. Close behind are **Shoreham** and **Bright**, showing growth rates of 246% and 238%, respectively, appealing to buyers drawn to their serene coastal and hilly settings.
-
-**Birregurra** and **St. Andrews Beach** also stand out with 233% and 228% growth, while Balnarring Beach (220%), Mickleham (219%), Dimboola (216%), and Connewarre (210%) complete the top 10.
-
-As you explore opportunities in these thriving neighborhoods, keep in mind that such significant growth can signal both potential and challenges in the dynamic Melbourne real estate market. 
-
-To get an ease with this, we examine the price volatility of these top-performing suburbs in the box plot below.
-
+This function identifies the top n localities with the highest price volatility, which can be useful for risk analysis. By calculating the average annual growth rate in property prices for each suburb over a specified period, this function provides insights into which suburbs have demonstrated strong and consistent price appreciation. Such information can guide investment decisions, highlight emerging neighborhoods, and shed light on property market trends.
 
 ```{r}
-#| label: fig-top-10-volatility
-#| tbl-cap: "Price Volatility of top 10 suburbs by growth"
-#| fig-width: 7
-#| fig-height: 3
+# Identify top 10 suburbs with the highest growth from 2013 to 2023
 
-top_10_growth <- property_data %>%
-  arrange(desc(`13-23`)) %>%
-  slice(1:10) 
-
-house_data_long_top_10 <- property_data %>%
-  filter(Locality %in% top_10_growth$Locality) %>%
-  pivot_longer(cols = `2013`:`2023`, names_to = "Year", values_to = "Price") %>%
-  filter(!is.na(Price))  # Filter out missing prices
-
-ggplot(house_data_long_top_10, aes(x = reorder(Locality, Price, FUN = median), y = Price, fill = Locality)) +
- geom_boxplot(fill = "lightblue") +
-  coord_flip() +  
-  labs(title = "Price Volatility of Top 10 Localities by Growth (2013-2023)",
-       x = "Locality",
-       y = "House Prices") +
-  theme_bw()
+top_suburbs <- top_performing_suburbs(property_data, 2013, 2023, top_n = 10)
+top_suburbs
 ```
 
-Each box in the plot as shown @fig-top-10-volatility  represents the **interquartile range (IQR)** of house prices for a given suburb, highlighting the spread and central tendency of prices.The line within each box indicates the median price.
+This command will output a list of the top 10 suburbs ranked by their average annual growth rates in median house prices. Each suburb's growth rate represents the average year-over-year change in price, expressed as a percentage. For example, if a suburb shows an annual growth rate of 8%, it suggests that on average, property prices in that suburb have increased by 8% each year over the specified period.
 
-**Connewarre** takes the lead in price fluctuations, with a price range spanning from approximately $1 million to nearly $2.5 million, indicating a highly dynamic housing market.
+**3. Calculating Price Volatility for a Specific Locality **
 
-**Balnarring Beach and Shoreham** exhibit significant volatility as well, but their price ranges are more contained, hovering between $1 million and $2 million. 
-Meanwhile, **St. Andrews Beach** shows some extreme high outliers, reflecting a few exceptionally high-value homes that drive overall volatility.
+The price_volatility function assesses the variability of property prices within a specified locality. This function is valuable for understanding price stability, where high volatility may point to market speculation or changing demand, while low volatility often indicates a more stable market.
 
-Interestingly, **Cardigan**, while enjoying the highest growth, displays moderate volatility with prices ranging from $500,000 to $1.5 million. This suggests a stable growth trajectory despite some fluctuations. Conversely, suburbs like **Dimboola** show less volatility, pointing to a more stable housing market.
+By calculating the standard deviation of median property prices over the available years, this function offers insights into price stability in a locality. Markets with higher volatility may present both greater risks and potential rewards, while stable markets are generally more attractive to conservative investors.
 
 ```{r}
-#| label: tbl-conclude
- 
-# Select relevant columns and calculate additional metrics
-summary_data <- property_data %>%
-  select(Locality, `2013`, `2023`, `13-23`, `PA`) %>%
-  mutate(
-    `Median Price (2023)` = `2023`,
-    `Percentage Growth (2013-2023)` = `13-23`,
-    `CAGR (%)` = `PA`,
-    `Volatility (IQR)` = apply(property_data[, c('2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023')], 1, function(x) IQR(x, na.rm = TRUE))
-  ) %>%
-  select(Locality, `Median Price (2023)`, `Percentage Growth (2013-2023)`, `Volatility (IQR)`, `CAGR (%)`) %>%
-  arrange(desc(`Percentage Growth (2013-2023)`))
-
-# Display the table using kableExtra for better formatting
-library(kableExtra)
-summary_data %>%
-  head(10) %>%  # Showing top 10 suburbs
-  kable(caption = "Key Metrics Summary for Top 10 Suburbs") %>%
-  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
-
+volatility <- price_volatility(property_data, "ABBOTSFORD")
+volatility
 ```
 
+The output will display the Locality and Price_Volatility, where Price_Volatility represents the standard deviation of median property prices for ABBOTSFORD.
 
-## Conclusion
+#### How to interpret   
 
-The suburbs analyzed displayed a broad spectrum of both price volatility and percentage growth over the past decade. Suburbs like Cardigan and Marysville offer promising long-term investment potential, driven by their exceptional growth rates.For an overview of all the 10 suburbs, refer to @tbl-conclude. However, their volatility must be carefully considered, as it could signal fluctuations in future market conditions.
+*High Volatility:* A high Price_Volatility suggests significant yearly price fluctuations, often due to changing demand, speculative investments, or shifts in neighborhood appeal.
 
-This analysis underscores the importance of a balanced approach when making investment decisions in Melbourne's housing market—one that considers both growth potential and the associated risks of price volatility. 
+*Low Volatility:* Low volatility indicates stable prices, which can be attractive to long-term investors seeking consistent returns, often reflecting steady demand and established infrastructure.
 
-**For seasoned investors, these insights might signal where to allocate capital, while first-time buyers may want to be cautious about potential volatility in certain areas.**
-
-While these factors provide valuable insight, potential buyers may also want to consider factors such as interest rates, local development, and rental demand when assessing growth and volatility. Additionally, elements like local development plans, infrastructure improvements, and broader economic conditions should also be evaluated before finalizing investment choices.
-
-## Reference
-
-Property Update. (n.d.). The best suburbs to invest in Melbourne. Retrieved October 4, 2024, from  -  https://propertyupdate.com.au/the-best-suburbs-to-invest-in-melbourne/ or click [here](https://propertyupdate.com.au/the-best-suburbs-to-invest-in-melbourne/)
+For example, high volatility in ABBOTSFORD may signal substantial price swings due to speculative interest or new developments, while low volatility would imply more predictable returns.
 
 
+**4. Summarizing Market Trends by Year **
+
+The market_trends_by_year function provides a yearly summary of key property market metrics, such as the average median price, average growth rate, and the number of unique localities. This function helps users understand general trends over time, making it valuable for high-level analysis of property price patterns and market coverage in Melbourne.
+
+```{r}
+annual_trends <- market_trends_by_year(property_data)
+head(annual_trends)
+```
+
+The output will show yearly data for avg_median_price, avg_growth_rate, and locality_count. This allows users to observe the market’s general growth, stability, and data coverage over the years.
+
+#### How to interpret
+
+*Average Median Price (avg_median_price):* A steady increase signals strong demand, while dips may indicate economic shifts.
+*Average Growth Rate (avg_growth_rate):* Positive growth suggests a robust market; fluctuations may reflect changing conditions.
+*Locality Count (locality_count):* An increasing count suggests market expansion or better data coverage.
+The market_trends_by_year function provides a high-level view of Melbourne’s property market, aiding investors, analysts, and policymakers in understanding long-term trends.
+
+
+## <u> Conclusion </u>
+
+This vignette demonstrates how to use the package’s functions to analyze Melbourne’s property market. Whether examining year-over-year price changes, identifying top-performing suburbs, or evaluating market stability, these tools offer valuable insights for investors, analysts, and other stakeholders seeking a deeper understanding of Melbourne’s evolving property landscape.
 
 
 
