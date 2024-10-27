@@ -1,0 +1,20 @@
+
+
+#' Property Sales Data for Melbourne Suburbs (2013-2023)
+#'
+#' A data set containing property sales statistics for various suburbs in Melbourne from 2013 to 2023.
+#' It includes median property prices for each year, along with preliminary and calculated growth metrics.
+#'
+#' @format A data frame with 8,657 rows and 7 variables:
+#' \describe{
+#'   \item{Locality}{Name of the suburb (character)}
+#'   \item{Prelim}{Preliminary property price for 2023 (numeric, in AUD)}
+#'   \item{22-23}{Percentage change in median property price from 2022 to 2023 (numeric)}
+#'   \item{13-23}{Percentage change in median property price from 2013 to 2023 (numeric)}
+#'   \item{PA}{Average annual growth rate of the property price over the period (numeric)}
+#'   \item{year}{Year of the recorded property data (integer)}
+#'   \item{median_price}{Median property price for the given year and locality (numeric, in AUD)}
+#' }
+#' @source Victoria State Government, Property Sales Statistics dataset (2013-2023). Available from: \url{https://www.land.vic.gov.au/valuations/resources-and-reports/property-sales-statistics}
+"property_data"
+
