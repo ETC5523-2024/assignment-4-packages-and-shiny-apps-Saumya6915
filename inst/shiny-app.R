@@ -2,9 +2,10 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(shinydashboard)
+library(MelbournePrices)
 
 # Load property data from your package
-data("property_data", package = "MelbournePrices")  # Replace with your actual package name
+data("property_data", package = "MelbournePrices")
 
 # Define UI
 ui <- dashboardPage(
@@ -47,7 +48,8 @@ ui <- dashboardPage(
               plotOutput("growthPlot"),
               tableOutput("growthTable"),
               br(),
-              p("This plot shows the year-over-year growth rate of property prices for the selected locality, helping users understand price appreciation or depreciation trends over time.")
+              p("This plot shows the year-over-year growth rate of property prices for the selected locality, helping users understand price appreciation or depreciation trends over time."),
+              HTML("<p><b>Interpretation:</b> The chart and table display the annual price growth rate for a selected locality. A positive growth rate indicates an increase in median property prices, while a negative rate shows a decline. Consistent positive growth may suggest a high-demand area, while fluctuations could indicate instability.</p>")
       ),
 
       # Top-Performing Suburbs Tab
@@ -59,9 +61,9 @@ ui <- dashboardPage(
               actionButton("generate", "Generate Output"),  # Action button to trigger output
               tableOutput("topSuburbsTable"),
               br(),
-              p("This table lists the top-performing suburbs based on average annual growth rate, calculated over the selected time period.")
+              p("This table lists the top-performing suburbs based on average annual growth rate, calculated over the selected time period."),
+              HTML("<p><b>Interpretation:</b> The table shows the top-performing suburbs based on average annual growth rate over a specific period. Higher growth rates indicate areas where property values have significantly appreciated, suggesting high demand. This information can be useful in identifying promising investment opportunities.</p>")
       ),
-
 
       # Price Volatility Tab
       tabItem(tabName = "volatility",
@@ -69,7 +71,8 @@ ui <- dashboardPage(
               selectInput("locality_volatility", "Choose a Locality:", choices = unique(property_data$Locality)),
               verbatimTextOutput("volatilityOutput"),
               br(),
-              p("The price volatility is calculated as the standard deviation of property prices over time for the selected locality. High volatility may indicate fluctuating demand, while low volatility suggests stability.")
+              p("The price volatility is calculated as the standard deviation of property prices over time for the selected locality. High volatility may indicate fluctuating demand, while low volatility suggests stability."),
+              HTML("<p><b>Interpretation:</b> Volatility reflects the variability in property prices over time. High volatility suggests potential market instability, while low volatility indicates price stability, which can be beneficial for risk-averse investors seeking consistent market behavior.</p>")
       ),
 
       # Market Trends Summary Tab
@@ -78,21 +81,19 @@ ui <- dashboardPage(
               sliderInput("year_range", "Select Year Range:",
                           min = min(property_data$year), max = max(property_data$year),
                           value = c(min(property_data$year), max(property_data$year)),
-                          sep = "", step = 1),  # Set step to 1 for whole numbers
+                          sep = "", step = 1),
               plotOutput("trendsPlot"),
               tableOutput("trendsTable"),
               br(),
-              p("This summary provides yearly statistics including average median price, average growth rate, and locality count, showing the overall trends in Melbourne’s property market over the selected years.")
+              p("This summary provides yearly statistics including average median price, average growth rate, and locality count, showing the overall trends in Melbourne’s property market over the selected years."),
+              HTML("<p><b>Interpretation:</b> The Market Trends Summary gives an overview of the average median property price, growth rate, and locality count within the selected time range. A rising trend suggests a growing market with increasing property values, while fluctuations in the growth rate may reflect changes in market demand.</p>")
       )
     )
   )
 )
 
 # Define Server
-
 server <- function(input, output, session) {
-  # Ensure year column is numeric
-  property_data$year <- as.numeric(property_data$year)
 
   # Annual Price Growth for a Locality
   growth_data <- reactive({
@@ -120,12 +121,10 @@ server <- function(input, output, session) {
     end_year <- as.numeric(input$end_year)
     top_n <- as.numeric(input$top_n)
 
-    # Handle invalid inputs
     if (is.na(start_year) || is.na(end_year) || is.na(top_n)) {
       return(data.frame(Error = "Please enter valid numeric values."))
     }
 
-    # Calculate top-performing suburbs
     top_performing_suburbs(property_data, start_year, end_year, top_n)
   })
 
@@ -134,7 +133,7 @@ server <- function(input, output, session) {
     if (nrow(data) == 0) {
       return(data.frame(Message = "No data available for the selected period."))
     }
-    data
+    data %>% rename(`Average Growth Rate (Annually)` = avg_annual_growth_rate)
   })
 
   # Price Volatility for a Locality
@@ -156,10 +155,11 @@ server <- function(input, output, session) {
   output$trendsPlot <- renderPlot({
     ggplot(trends_data(), aes(x = year)) +
       geom_line(aes(y = avg_median_price), color = "darkgreen", size = 1) +
-      geom_line(aes(y = avg_growth_rate * 10000), color = "blue", size = 1, linetype = "dashed") +  # Scaled for visualization
+      geom_line(aes(y = avg_growth_rate * 10000), color = "blue", size = 1, linetype = "dashed") +
       labs(title = "Market Trends by Year",
            x = "Year", y = "Avg Median Price (AUD)",
            caption = "Note: Growth rate scaled for visualization") +
+      scale_x_continuous(breaks = seq(min(trends_data()$year), max(trends_data()$year), by = 1)) +
       scale_y_continuous(sec.axis = sec_axis(~./10000, name = "Avg Growth Rate (%)")) +
       theme_minimal()
   })
@@ -171,7 +171,6 @@ server <- function(input, output, session) {
              `Average Growth Rate (%)` = avg_growth_rate, `Locality Count` = locality_count)
   })
 }
-
 
 # Run the application
 shinyApp(ui = ui, server = server)

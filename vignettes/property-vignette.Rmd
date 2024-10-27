@@ -23,7 +23,7 @@ library(readxl)
 ```
 
 ```{r}
-load ("C:/Users/aalch/OneDrive/Desktop/Communicating with data/assignment-4-packages-and-shiny-apps-Saumya6915/data/property_data_wide.rda")
+data("property_data", package = "MelbournePrices")
 
 ```
 
@@ -46,7 +46,7 @@ The data for this analysis was sourced from the [Victoria State Government websi
 The **Valuer-General Victoria (VGV)** releases comprehensive data which is compiled using information lodged every time a property sale is completed. It focuses on median house prices across various suburbs in Melbourne. The key metrics include annual median prices and percentage changes for each suburb.
 
 
-```{r echo =FALSE}
+```{r }
 #| label: tbl-data-dictionary
 
 library(knitr)

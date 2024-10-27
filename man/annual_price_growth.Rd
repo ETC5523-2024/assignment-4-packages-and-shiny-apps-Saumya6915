@@ -7,9 +7,9 @@
 annual_price_growth(property_data, locality)
 }
 \arguments{
-\item{locality}{Character string specifying the name of the locality for which to calculate annual growth.}
+\item{property_data}{Data frame containing property data with columns 'Locality', 'year', and 'median_price'.}
 
-\item{data}{Data frame containing property data with columns 'Locality', 'year', and 'median_price'.}
+\item{locality}{Character string specifying the name of the locality for which to calculate annual growth.}
 }
 \value{
 A data frame with columns 'year', 'median_price', and 'annual_growth_rate' representing the annual price growth rate.

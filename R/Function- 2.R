@@ -10,6 +10,7 @@
 #' @return A data frame with columns 'Locality' and 'avg_annual_growth_rate', showing the top `top_n` suburbs.
 #' @examples
 #' top_performing_suburbs(property_data, 2013, 2023, top_n = 10)
+#' @export
 top_performing_suburbs <- function(property_data, start_year, end_year, top_n = 5) {
   period_data <- subset(property_data, year >= start_year & year <= end_year)
   growth_data <- aggregate(median_price ~ Locality, data = period_data, function(x) mean(diff(log(x))) * 100)

@@ -10,16 +10,16 @@ property_data_wide <- read_excel("data-raw/Houses-by-suburb-2013-2023.xlsx")
 
 ### Cleaning of the data
 
-property_data_wide$`2013` <- as.numeric(property_data$`2013`)
-property_data_wide$`2014` <- as.numeric(property_data$`2014`)
-property_data_wide$`2015` <- as.numeric(property_data$`2015`)
-property_data_wide$`2016` <- as.numeric(property_data$`2016`)
-property_data_wide$`2017` <- as.numeric(property_data$`2017`)
-property_data_wide$`2018` <- as.numeric(property_data$`2018`)
-property_data_wide$`2019` <- as.numeric(property_data$`2019`)
-property_data_wide$`Prelim` <- as.numeric(property_data$`Prelim`)
-property_data_wide$`13-23` <- as.numeric(property_data$`13-23`)
-property_data_wide$`PA` <- as.numeric(property_data$`PA`)
+property_data_wide$`2013` <- as.numeric(property_data_wide$`2013`)
+property_data_wide$`2014` <- as.numeric(property_data_wide$`2014`)
+property_data_wide$`2015` <- as.numeric(property_data_wide$`2015`)
+property_data_wide$`2016` <- as.numeric(property_data_wide$`2016`)
+property_data_wide$`2017` <- as.numeric(property_data_wide$`2017`)
+property_data_wide$`2018` <- as.numeric(property_data_wide$`2018`)
+property_data_wide$`2019` <- as.numeric(property_data_wide$`2019`)
+property_data_wide$`Prelim` <- as.numeric(property_data_wide$`Prelim`)
+property_data_wide$`13-23` <- as.numeric(property_data_wide$`13-23`)
+property_data_wide$`PA` <- as.numeric(property_data_wide$`PA`)
 
 
 property_data <- property_data_wide %>%
@@ -33,4 +33,5 @@ property_data <- property_data_wide %>%
 glimpse(property_data)
 
 usethis::use_data(property_data, overwrite = TRUE)
-usethis::use_data(property_data_wide, overwrite = TRUE)
+
+

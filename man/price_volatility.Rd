@@ -4,10 +4,10 @@
 \alias{price_volatility}
 \title{Calculate Price Volatility for a Locality}
 \usage{
-price_volatility(data, locality)
+price_volatility(property_data, Locality)
 }
 \arguments{
-\item{data}{Data frame containing property data with columns 'Locality' and 'median_price'.}
+\item{property_data}{Data frame containing property data with columns 'Locality' and 'median_price'.}
 
 \item{locality}{Character string specifying the name of the locality for which to measure volatility.}
 }

@@ -8,6 +8,7 @@
 #' @return A data frame with columns 'year', 'median_price', and 'annual_growth_rate' representing the annual price growth rate.
 #' @examples
 #' annual_price_growth(property_data, "ABBOTSFORD")
+#' @export
 annual_price_growth <- function(property_data, locality) {
   print("property_data type:")
   print(class(property_data))

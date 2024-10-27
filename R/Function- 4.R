@@ -7,6 +7,7 @@
 #' @return A data frame with columns 'year', 'avg_median_price', 'avg_growth_rate', and 'locality_count', summarizing trends per year.
 #' @examples
 #' market_trends_by_year(property_data)
+#' @export
 
 market_trends_by_year <- function(data) {
   # Define a helper function to calculate the average growth rate
