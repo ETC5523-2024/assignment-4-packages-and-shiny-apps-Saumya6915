@@ -5,7 +5,7 @@ library(tidyverse)
 library(dplyr)
 library(tidyr)
 
-property_data_wide <- read_excel("Houses-by-suburb-2013-2023.xlsx")
+property_data_wide <- read_excel("data-raw/Houses-by-suburb-2013-2023.xlsx")
 
 
 ### Cleaning of the data
@@ -33,3 +33,4 @@ property_data <- property_data_wide %>%
 glimpse(property_data)
 
 usethis::use_data(property_data, overwrite = TRUE)
+usethis::use_data(property_data_wide, overwrite = TRUE)
