@@ -1,0 +1,13 @@
+pkgdown:
+  url: 'https://etc5523-2024.github.io/assignment-4-packages-and-shiny-apps-Saumya6915/'
+  destination: docs
+  template:
+    package: pkgdown
+    bootstrap: 5
+  navbar:
+    structure:
+      left: [reference, articles]
+      right: [github]
+  home:
+    title: "Market Analysis"
+    description: "Analyzing Melbourne’s Housing Market: Price Volatility and Growth Trends (2013-2023)"
