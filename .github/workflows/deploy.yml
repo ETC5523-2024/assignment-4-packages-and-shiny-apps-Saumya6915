@@ -3,7 +3,7 @@ name: Deploy Jekyll Site
 on:
   push:
     branches:
-      - '**'  # This will trigger the action on any branch
+      - main   # This will trigger the action on any branch
 
 jobs:
   build:
