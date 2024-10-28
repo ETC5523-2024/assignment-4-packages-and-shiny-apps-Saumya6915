@@ -16,7 +16,7 @@ RoxygenNote: 7.3.2
 Depends: 
     R (>= 2.10)
 LazyData: true
-url: 'https://etc5523-2024.github.io/assignment-4-packages-and-shiny-apps-Saumya6915/'
+URL: https://etc5523-2024.github.io/assignment-4-packages-and-shiny-apps-Saumya6915
 Suggests: 
     knitr,
     rmarkdown,
