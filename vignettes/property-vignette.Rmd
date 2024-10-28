@@ -2,7 +2,7 @@
 title: "Analyzing Melbourne’s Housing Market: Price Volatility and Growth Trends (2013-2023)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{property-vignette}
+  %\VignetteIndexEntry{Analyzing Melbourne’s Housing Market: Price Volatility and Growth Trends (2013-2023)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,19 +14,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(MelbournePrices)
-library(tidyverse)
-library(readr)
-library(knitr)
-library(readxl)
-```
-
 ```{r}
+library(MelbournePrices)
 data("property_data", package = "MelbournePrices")
-
 ```
 
+## <u> Installation </u>
+Please refer to the README file for detailed installation instructions.
 
 ## <u> Introduction </u>
 
@@ -83,7 +77,7 @@ kable(data_desc, caption = "Variables in the dataset") %>%
 
 **Year and median_price:** These columns form the basis of our time-series analysis, enabling us to examine price changes across years for each locality.
 
-# <u>Understanding the Dynamics</u>
+## <u>Understanding the Dynamics</u>
 
 **1. Annual Price Growth for a Locality**
 
@@ -96,7 +90,34 @@ annual_growth <- annual_price_growth(property_data, "ABBOTSFORD")
 head(annual_growth)
 ```
 
+We can choose any locality/suburb for which we want to see the graph over the years and get the output for the same using this - 
+
+```{r}
+
+# Ploting annual growth for ABBOTSFORD
+
+library(ggplot2)
+annual_growth <- annual_price_growth(property_data, "ABBOTSFORD")
+ggplot(annual_growth, aes(x = year, y = annual_growth_rate)) +
+  geom_line(color = "darkgreen") +
+  scale_x_continuous(breaks = seq(min(annual_growth$year), max(annual_growth$year), by = 1)) +
+  theme_bw() +
+  labs(title = "Annual Price Growth for ABBOTSFORD", x = "Year", y = "Growth rate (Annual)")
+```
+
 The output displays the year, median_price, and annual_growth_rate columns for ABBOTSFORD. The annual_growth_rate column shows the percentage change in median property prices from one year to the next, giving insight into growth trends and potential volatility.
+
+#### How to interpret
+
+The Annual Price Growth chart and table present the year-over-year growth rate of median property prices for the selected locality, reflecting how values change annually.
+
+*Positive Growth Rate:* Indicates an increase in property values, often signaling high demand due to factors like improved infrastructure, amenities, or buyer interest.
+
+*Negative Growth Rate:* Suggests a decline in values, possibly due to reduced demand or economic shifts.
+
+*Stability vs. Fluctuation:* Consistent growth reflects a stable market, while fluctuations may indicate volatility, often from speculative buying or changing demand.
+
+This data helps investors identify high-growth areas or manage risks, and policymakers monitor market stability and guide development efforts.
 
 **2. Top-Performing Suburbs Based on Average Annual Growth **
 
@@ -110,6 +131,16 @@ top_suburbs
 ```
 
 This command will output a list of the top 10 suburbs ranked by their average annual growth rates in median house prices. Each suburb's growth rate represents the average year-over-year change in price, expressed as a percentage. For example, if a suburb shows an annual growth rate of 8%, it suggests that on average, property prices in that suburb have increased by 8% each year over the specified period.
+
+#### How to interpret
+
+The Top-Performing Suburbs table displays the suburbs with the highest average annual growth rates, highlighting areas with significant property value appreciation over the selected period.
+
+*High Average Growth Rate:* Indicates a suburb with rapid price appreciation, often suggesting strong demand, emerging popularity, or new development potential.
+
+*Lower Average Growth Rate:* Reflects more gradual growth, typical of stable or well-established neighborhoods with steady demand.
+
+This data can help investors target high-growth areas and provide insights into neighborhoods with rising market interest, while lower volatility areas may appeal to risk-averse buyers or long-term investors.
 
 **3. Calculating Price Volatility for a Specific Locality **
 
@@ -147,8 +178,11 @@ The output will show yearly data for avg_median_price, avg_growth_rate, and loca
 #### How to interpret
 
 *Average Median Price (avg_median_price):* A steady increase signals strong demand, while dips may indicate economic shifts.
+
 *Average Growth Rate (avg_growth_rate):* Positive growth suggests a robust market; fluctuations may reflect changing conditions.
+
 *Locality Count (locality_count):* An increasing count suggests market expansion or better data coverage.
+
 The market_trends_by_year function provides a high-level view of Melbourne’s property market, aiding investors, analysts, and policymakers in understanding long-term trends.
 
 

@@ -1,10 +1,14 @@
 Package: MelbournePrices
-Title: What the Package Does (One Line, Title Case)
+Title: Analyzing Melbourne’s Housing Market Trends and Price Volatility (2013-2023)
 Version: 1.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Saumya", "Chaudhary", , "scha0310@student.monash.edu", role = c("aut", "cre"))
+Description: The `MelbournePrices` package provides tools to analyze housing market trends and price volatility 
+    across suburbs in Melbourne from 2013 to 2023. It includes functions for calculating annual price growth 
+    rates, identifying top-performing suburbs based on average annual growth, assessing price volatility, 
+    and summarizing market trends by year. This package is designed for investors, analysts, and policymakers 
+    interested in understanding the dynamics of Melbourne's real estate market. Data is sourced from the Victoria 
+    State Government's Property Sales Statistics dataset.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -15,5 +19,7 @@ LazyData: true
 url: 'https://etc5523-2024.github.io/assignment-4-packages-and-shiny-apps-Saumya6915/'
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    kableExtra,
+    ggplot2
 VignetteBuilder: knitr

@@ -1,7 +1,7 @@
 #' Calculate Annual Price Growth for a Locality
 #'
 #' This function calculates the annual growth rate of the median property price for a specified locality.
-#'
+#' @importFrom utils head
 #' @param property_data Data frame containing property data with columns 'Locality', 'year', and 'median_price'.
 #' @param locality Character string specifying the name of the locality for which to calculate annual growth.
 #'

@@ -49,7 +49,9 @@ ui <- dashboardPage(
               tableOutput("growthTable"),
               br(),
               p("This plot shows the year-over-year growth rate of property prices for the selected locality, helping users understand price appreciation or depreciation trends over time."),
-              HTML("<p><b>Interpretation:</b> The chart and table display the annual price growth rate for a selected locality. A positive growth rate indicates an increase in median property prices, while a negative rate shows a decline. Consistent positive growth may suggest a high-demand area, while fluctuations could indicate instability.</p>")
+              HTML("<p><b>Interpretation:</b> The chart and table display the annual price growth rate for a selected locality. Positive Growth Rate: Indicates an increase in property values, often signaling high demand due to factors like improved infrastructure, amenities, or buyer interest.
+Negative Growth Rate: Suggests a decline in values, possibly due to reduced demand or economic shifts.
+Stability vs. Fluctuation: Consistent growth reflects a stable market, while fluctuations may indicate volatility, often from speculative buying or changing demand.</p>")
       ),
 
       # Top-Performing Suburbs Tab
@@ -62,7 +64,10 @@ ui <- dashboardPage(
               tableOutput("topSuburbsTable"),
               br(),
               p("This table lists the top-performing suburbs based on average annual growth rate, calculated over the selected time period."),
-              HTML("<p><b>Interpretation:</b> The table shows the top-performing suburbs based on average annual growth rate over a specific period. Higher growth rates indicate areas where property values have significantly appreciated, suggesting high demand. This information can be useful in identifying promising investment opportunities.</p>")
+              HTML("<p><b>Interpretation:</b> The table shows the top-performing suburbs based on average annual growth rate over a specific period.
+High Average Growth Rate: Indicates a suburb with rapid price appreciation, often suggesting strong demand, emerging popularity, or new development potential.
+Lower Average Growth Rate: Reflects more gradual growth, typical of stable or well-established neighborhoods with steady demand.
+</p>")
       ),
 
       # Price Volatility Tab
@@ -86,7 +91,9 @@ ui <- dashboardPage(
               tableOutput("trendsTable"),
               br(),
               p("This summary provides yearly statistics including average median price, average growth rate, and locality count, showing the overall trends in Melbourne’s property market over the selected years."),
-              HTML("<p><b>Interpretation:</b> The Market Trends Summary gives an overview of the average median property price, growth rate, and locality count within the selected time range. A rising trend suggests a growing market with increasing property values, while fluctuations in the growth rate may reflect changes in market demand.</p>")
+              HTML("<p><b>Interpretation:</b> The Market Trends Summary gives an overview of the average median property price, growth rate, and locality count within the selected time range. *Average Median Price (avg_median_price):* A steady increase signals strong demand, while dips may indicate economic shifts.
+Average Growth Rate: Positive growth suggests a robust market; fluctuations may reflect changing conditions.
+Locality Count: An increasing count suggests market expansion or better data coverage.</p>")
       )
     )
   )

@@ -4,10 +4,32 @@ template:
 
 navbar:
   title: "MelbournePrices"
+
   left:
     - text: "Home"
       href: index.html
+    - text: "Get Started"
+      href: articles/introduction.html
+    - text: "User Guide"
+      href: articles/usage-guide.html
     - text: "Reference"
       href: reference/index.html
-    - text: "Articles"
-      href: articles/index.html
+
+  right:
+    - icon: bi-github
+      href: https://github.com/ETC5523-2024/assignment-4-packages-and-shiny-apps-Saumya6915
+    - icon: bi-envelope
+      href: mailto:scha0310@student.monash.edu
+    - icon: bi-linkedin
+      href: https://www.linkedin.com/in/saumyachaudhary15/
+
+articles:
+  - title: "Introduction"
+    contents:
+      - file: articles/introduction
+        title: "Introduction to the package - MelbournePrices"
+      - file: articles/usage-guide
+        title: "User guide for the functions"
+
+footer:
+  text: "MelbournePrices | © 2024 ETC5523-2024 | [GitHub](https://github.com/ETC5523-2024/assignment-4-packages-and-shiny-apps-Saumya6915) | [Contact](mailto:scha0310@student.monash.edu)"

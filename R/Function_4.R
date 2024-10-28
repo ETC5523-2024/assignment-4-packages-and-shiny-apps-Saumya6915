@@ -1,7 +1,7 @@
 #' Summarize Market Trends by Year
 #'
 #' Aggregates annual statistics, such as average median price, average growth rate, and the number of localities tracked, by year.
-#'
+#' @importFrom stats sd aggregate
 #' @param data Data frame containing property data with columns 'year', 'median_price', and 'Locality'.
 #'
 #' @return A data frame with columns 'year', 'avg_median_price', 'avg_growth_rate', and 'locality_count', summarizing trends per year.
